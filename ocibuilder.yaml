@@ -1,0 +1,91 @@
+build:
+  templates:
+    - name: build
+      cmd:
+        - docker:
+            inline:
+              - LABEL Maintainer="Theodora Ins Pyrite <cogent[a]cogentwbebworks.com>" 
+              - LABEL Name="Pichate Ins"  
+              - LABEL Version="v0.1.0" 
+              - ARG SWOOLE_VERSION=v4.5.2
+              - 'ENV SWOOLE_VERSION=${SWOOLE_VERSION}'
+              - ARG HOMEDIR=/var/www/html
+              - ENV HOMEDIR=$HOMEDIR
+              - |
+                RUN apt-get update \
+                 && apt-get -y --no-install-recommends install \
+                 build-essential \
+                 git \
+                 inotify-tools \
+                 libssl-dev \
+                 supervisor \
+                 unzip \
+                 zlib1g-dev \
+                 php7.4-curl \ 
+                 php7.4-json \
+                 php7.4-gd \
+                 php7.4-mbstring \
+                 php7.4-intl \
+                 php7.4-bcmath \
+                 php7.4-bz2 \
+                 php7.4-readline \
+                 php7.4-zip \
+                 php7.4-mysql \
+                 php7.4-pgsql \
+                 php7.4-pdo \
+                 php7.4-dev \
+                 && cd /tmp \
+                 && git clone https://github.com/swoole/swoole-src.git \
+                 && cd swoole-src \
+                 && git checkout ${SWOOLE_VERSION}\
+                 && phpize \
+                 && ./configure --enable-openssl --enable-http2 --enable-sockets --enable-mysqlnd \
+                 && make \
+                 && make install-modules \
+                 && echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini \
+                 && apt-get autoremove --purge -y git php7.4-dev build-essential \
+                 && cd / \
+                 && rm -rf /tmp/swole-src \
+                 && apt-get clean \
+                 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+              - |
+                RUN mkdir -p /var/log/cron \
+                 && touch /var/log/cron/cron.log \
+                 && mkdir -m 0644 -p /etc/cron.d \
+                 && mkdir -m 0755  -p /var/www/html \
+                 && chown -R www-data:www-data /var/www
+              - WORKDIR $HOMEDIR
+              - 'ENV PATH="$PATH:/var/www/html/vendor/bin"'
+              - EXPOSE 1215
+  steps:
+    - metadata:
+        name: quay.io/golive/php-swoole
+        labels:
+          overlay: build-step
+      stages:
+        - metadata:
+            name: build-env
+          base:
+            image: docker.io/phpdockerio/php74-cli
+            platform: latest
+          template: build
+      tag: v0.1.0
+      purge: false
+      context:
+        localContext:
+          contextPath: .
+login:
+  - registry: quay.io
+    token: TOKEN
+    creds:
+      plain:
+        username: USERNAME
+push:
+  - registry: quay.io
+    image: golive/php-swoole
+    tag: v0.1.0
+params:
+  - dest: login.0.token
+    valueFromEnvVariable: TOKEN
+  - dest: login.0.creds.plain.username
+    valueFromEnvVariable: USERNAME
