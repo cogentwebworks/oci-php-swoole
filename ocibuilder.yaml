@@ -4,7 +4,7 @@ build:
       cmd:
         - docker:
             inline:
-              - LABEL Maintainer="Theodora Ins Pyrite <cogent[a]cogentwbebworks.com>" 
+              - LABEL Maintainer="Pichate Ins <cogent[a]cogentwbebworks.com>" 
               - LABEL Name="Pichate Ins"  
               - LABEL Version="v0.1.0" 
               - ARG SWOOLE_VERSION=v4.5.2
@@ -59,7 +59,7 @@ build:
               - EXPOSE 1215
   steps:
     - metadata:
-        name: quay.io/golive/php-swoole
+        name: docker.mooc.guru/library/php-swoole
         labels:
           overlay: build-step
       stages:
