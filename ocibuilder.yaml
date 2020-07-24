@@ -6,7 +6,7 @@ build:
             inline:
               - LABEL Maintainer="Pichate Ins <cogent[a]cogentwbebworks.com>" 
               - LABEL Name="Pichate Ins"  
-              - LABEL Version="v0.1.0" 
+              - LABEL Version="v0.1.6" 
               - ARG SWOOLE_VERSION=v4.5.2
               - 'ENV SWOOLE_VERSION=${SWOOLE_VERSION}'
               - |
@@ -63,7 +63,7 @@ build:
             image: docker.io/phpdockerio/php74-cli
             platform: latest
           template: build
-      tag: v0.1.5
+      tag: v0.1.6
       purge: false
       context:
         localContext:
@@ -77,7 +77,7 @@ login:
 push:
   - registry: docker.mooc.guru
     image: library/php-swoole
-    tag: v0.1.5
+    tag: v0.1.6
 params:
   - dest: login.0.token
     valueFromEnvVariable: TOKEN
