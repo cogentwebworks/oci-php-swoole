@@ -28,6 +28,7 @@ build:
                  php7.4-intl \
                  php7.4-bcmath \
                  php7.4-bz2 \
+                 php7.4-redis \
                  php7.4-readline \
                  php7.4-zip \
                  php7.4-mysql \
@@ -39,7 +40,7 @@ build:
                  && cd swoole-src \
                  && git checkout ${SWOOLE_VERSION}\
                  && phpize \
-                 && ./configure --enable-openssl --enable-http2 --enable-sockets --enable-mysqlnd \
+                 && ./configure --enable-openssl --enable-http2 --enable-sockets --enable-mysqlnd --enable-coroutine-postgresql --enable-thread  --enable-coroutine  \
                  && make \
                  && make install-modules \
                  && echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini \
