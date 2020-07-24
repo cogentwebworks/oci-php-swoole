@@ -9,8 +9,6 @@ build:
               - LABEL Version="v0.1.0" 
               - ARG SWOOLE_VERSION=v4.5.2
               - 'ENV SWOOLE_VERSION=${SWOOLE_VERSION}'
-              - ARG HOMEDIR=/var/www/html
-              - ENV HOMEDIR=$HOMEDIR
               - |
                 RUN apt-get update \
                  && apt-get -y --no-install-recommends install \
@@ -52,12 +50,7 @@ build:
               - |
                 RUN mkdir -p /var/log/cron \
                  && touch /var/log/cron/cron.log \
-                 && mkdir -m 0644 -p /etc/cron.d \
-                 && mkdir -m 0755  -p /var/www/html \
-                 && chown -R www-data:www-data /var/www
-              - WORKDIR $HOMEDIR
-              - 'ENV PATH="$PATH:/var/www/html/vendor/bin"'
-              - EXPOSE 1215
+                 && mkdir -m 0644 -p /etc/cron.d 
   steps:
     - metadata:
         name: docker.mooc.guru/library/php-swoole
@@ -70,21 +63,21 @@ build:
             image: docker.io/phpdockerio/php74-cli
             platform: latest
           template: build
-      tag: v0.1.0
+      tag: v0.1.5
       purge: false
       context:
         localContext:
           contextPath: .
 login:
-  - registry: quay.io
+  - registry: docker.mooc.guru
     token: TOKEN
     creds:
       plain:
         username: USERNAME
 push:
-  - registry: quay.io
-    image: golive/php-swoole
-    tag: v0.1.0
+  - registry: docker.mooc.guru
+    image: library/php-swoole
+    tag: v0.1.5
 params:
   - dest: login.0.token
     valueFromEnvVariable: TOKEN
