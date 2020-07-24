@@ -6,7 +6,7 @@ build:
             inline:
               - LABEL Maintainer="Pichate Ins <cogent[a]cogentwbebworks.com>" 
               - LABEL Name="Pichate Ins"  
-              - LABEL Version="v0.1.6" 
+              - LABEL Version="v0.1.6.1" 
               - ARG SWOOLE_VERSION=v4.5.2
               - 'ENV SWOOLE_VERSION=${SWOOLE_VERSION}'
               - |
@@ -51,6 +51,7 @@ build:
                 RUN mkdir -p /var/log/cron \
                  && touch /var/log/cron/cron.log \
                  && mkdir -m 0644 -p /etc/cron.d 
+              - EXPOSE 1215   
   steps:
     - metadata:
         name: docker.mooc.guru/library/php-swoole
@@ -63,7 +64,7 @@ build:
             image: docker.io/phpdockerio/php74-cli
             platform: latest
           template: build
-      tag: v0.1.6
+      tag: v0.1.6.1
       purge: false
       context:
         localContext:
@@ -77,7 +78,7 @@ login:
 push:
   - registry: docker.mooc.guru
     image: library/php-swoole
-    tag: v0.1.6
+    tag: v0.1.6.1
 params:
   - dest: login.0.token
     valueFromEnvVariable: TOKEN
