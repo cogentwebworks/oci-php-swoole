@@ -37,7 +37,7 @@ RUN apt-get update \
     && make \
     && make install-modules \
     && echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini \
-    && apt-get autoremove --purge -y  php7.4-dev build-essential \
+    && apt-get autoremove --purge -y php7.4-dev build-essential \
     && cd / \
     && rm -rf /tmp/swole-src \
     && apt-get clean \
