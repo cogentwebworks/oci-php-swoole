@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 FROM docker.io/phpdockerio/php74-cli:latest AS build-env
 LABEL Maintainer="Pichate Ins <cogent[a]cogentwbebworks.com>"
 LABEL Name="Pichate Ins"
