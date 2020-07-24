@@ -65,7 +65,7 @@ build:
             platform: latest
           template: build
       tag: v0.1.6.1
-      purge: false
+      purge: true
       context:
         localContext:
           contextPath: .
