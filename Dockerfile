@@ -104,7 +104,7 @@ RUN git clone -b ${SWOOLE_VERSION} --depth 1 https://github.com/swoole/swoole-sr
     && make && make install
 
 RUN touch /etc/php7/conf.d/03_swoole.ini \
-    && echo "extension=swoole.so" > /etc/php7/conf.d/03_swoole.inicd && rm -rf /tmp/swoole-src
+    && echo "extension=swoole.so" > /etc/php7/conf.d/03_swoole.ini && cd && rm -rf /tmp/swoole-src
 
 RUN set -x ; \
   addgroup -g 82 -S www-data ; \
