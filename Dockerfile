@@ -113,7 +113,8 @@ RUN set -x ; \
 RUN mkdir -p /var/log/cron \
     && touch /var/log/cron/cron.log \
     && mkdir -pm 0644 /etc/cron.d \
-    && mkdir -pm 0755 mkdir -p {/var/www,/var/artifacts} \
+    && mkdir -pm 0755 mkdir -p /var/www \
+    && mkdir -pm 0755 mkdir -p /var/artifacts \
     && chown -R www-data:www-data /var/www
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
