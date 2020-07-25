@@ -7,3 +7,5 @@ yarn-error.log
 ocibuilder.yaml
 overlay.yaml
 .next
+.DS_Store
+Dockerfile

@@ -2,7 +2,7 @@
 FROM docker.io/alpine:3 AS build-env
 LABEL Maintainer="Pichate Ins <pichate.ins[at]outlook.com>"
 LABEL Name="Pichate Ins"
-LABEL Version="v0.2.0"
+LABEL Version="v0.2.1"
 ARG SWOOLE_VERSION=v4.5.2
 ENV SWOOLE_VERSION=${SWOOLE_VERSION}
 WORKDIR /tmp
@@ -113,11 +113,13 @@ RUN set -x ; \
 RUN mkdir -p /var/log/cron \
     && touch /var/log/cron/cron.log \
     && mkdir -pm 0644 /etc/cron.d \
-    && mkdir -pm 0755 /var/www \
+    && mkdir -pm 0755 mkdir -p {/var/www,/var/artifacts} \
     && chown -R www-data:www-data /var/www
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 RUN composer global require hirak/prestissimo
 RUN cp /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && echo "Asia/Bangkok" > /etc/timezone
 RUN apk del .build-deps
+
+COPY ./swoole/php/php-ini-overrides.ini /etc/php7/conf.d/99-overrides.ini
 EXPOSE 1215
