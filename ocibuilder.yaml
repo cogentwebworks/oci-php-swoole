@@ -4,54 +4,127 @@ build:
       cmd:
         - docker:
             inline:
-              - LABEL Maintainer="Pichate Ins <cogent[a]cogentwbebworks.com>" 
-              - LABEL Name="Pichate Ins"  
-              - LABEL Version="v0.1.6.1" 
-              - ARG SWOOLE_VERSION=v4.5.2
-              - 'ENV SWOOLE_VERSION=${SWOOLE_VERSION}'
-              - |
-                RUN apt-get update \
-                 && apt-get -y --no-install-recommends install \
-                 build-essential \
-                 git \
-                 inotify-tools \
-                 libssl-dev \
-                 supervisor \
-                 unzip \
-                 zlib1g-dev \
-                 php7.4-curl \ 
-                 php7.4-json \
-                 php7.4-gd \
-                 php7.4-mbstring \
-                 php7.4-intl \
-                 php7.4-bcmath \
-                 php7.4-bz2 \
-                 php7.4-redis \
-                 php7.4-readline \
-                 php7.4-zip \
-                 php7.4-mysql \
-                 php7.4-pgsql \
-                 php7.4-pdo \
-                 php7.4-dev \
-                 && cd /tmp \
-                 && git clone https://github.com/swoole/swoole-src.git \
-                 && cd swoole-src \
-                 && git checkout ${SWOOLE_VERSION}\
-                 && phpize \
-                 && ./configure --enable-openssl --enable-http2 --enable-sockets --enable-mysqlnd --enable-coroutine-postgresql --enable-thread  --enable-coroutine  \
-                 && make \
-                 && make install-modules \
-                 && echo "extension=swoole.so" >> /etc/php/7.4/cli/php.ini \
-                 && apt-get autoremove --purge -y  php7.4-dev build-essential \
-                 && cd / \
-                 && rm -rf /tmp/swole-src \
-                 && apt-get clean \
-                 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-              - |
+               - LABEL Maintainer="Pichate Ins <pichate.ins[at]outlook.com>"
+               - LABEL Name="Pichate Ins"
+               - LABEL Version="v0.2.0"
+               - ARG SWOOLE_VERSION=v4.5.2
+               - ENV SWOOLE_VERSION=${SWOOLE_VERSION}
+               - WORKDIR /tmp
+               - |
+                RUN apk --update add --no-cache \
+                    freetype \
+                    libjpeg-turbo \
+                    libpng \
+                    nghttp2 \
+                    ca-certificates \
+                    supervisor \
+                    tzdata \
+                    libstdc++ \
+                    libbz2 \
+                    bzip2 \
+                    libzip \
+                    libxml2 \
+                    gmp \
+                    zlib \
+                    yaml \
+                    git
+               - | 
+                 RUN apk --update add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/community \
+                    php7 \
+                    php7-bcmath \
+                    php7-bz2 \
+                    php7-calendar \
+                    php7-ctype \
+                    php7-curl \
+                    php7-dbg \
+                    php7-dev \
+                    php7-dom \
+                    php7-exif \
+                    php7-fileinfo \
+                    php7-gd \
+                    php7-gettext \
+                    php7-iconv \
+                    php7-imap \
+                    php7-intl \
+                    php7-json \
+                    php7-mbstring \
+                    php7-mysqli \
+                    php7-mysqlnd \
+                    php7-opcache \
+                    php7-openssl \
+                    php7-pcntl \
+                    php7-pdo \
+                    php7-pdo_mysql \
+                    php7-pdo_pgsql \
+                    php7-pear \
+                    php7-pgsql \
+                    php7-phar \
+                    php7-phpdbg \
+                    php7-posix \
+                    php7-session \
+                    php7-soap \
+                    php7-sockets \
+                    php7-sodium \
+                    php7-sqlite3 \
+                    php7-static \
+                    php7-tidy \
+                    php7-tokenizer \
+                    php7-xml \
+                    php7-xmlrpc \
+                    php7-xsl \
+                    php7-zip \ 
+                    php7-pecl-redis
+                    libbsd
+               - | 
+                RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+                    linux-headers \
+                    make \
+                    automake \
+                    autoconf \
+                    gcc \
+                    g++ \ 
+                    musl-dev \
+                    zlib-dev \
+                    freetype-dev \
+                    libjpeg-turbo-dev \
+                    libpng-dev \
+                    bzip2-dev \
+                    libzip-dev \
+                    libxml2-dev \
+                    gmp-dev \
+                    openssl-dev \
+                    nghttp2-dev \
+                    yaml-dev \
+                    postgresql-dev \
+                    libmcrypt-dev \
+                    libxml2-dev \
+                    libbsd-dev \
+                    file \
+                    curl 
+               - |
+                RUN git clone -b ${SWOOLE_VERSION} --depth 1 https://github.com/swoole/swoole-src.git \
+                    && cd swoole-src \
+                    && phpize \
+                    && ./configure --with-php-config=/usr/bin/php-config7 --enable-openssl --enable-http2 --enable-sockets --enable-mysqlnd  \
+                    && make && make install
+               - | 
+                RUN touch /etc/php7/conf.d/03_swoole.ini \
+                    && echo "extension=swoole.so" > /etc/php7/conf.d/03_swoole.inicd && rm -rf /tmp/swoole-src
+               - | 
+                RUN set -x ; \
+                  addgroup -g 82 -S www-data ; \
+                  adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
+               - |
                 RUN mkdir -p /var/log/cron \
-                 && touch /var/log/cron/cron.log \
-                 && mkdir -m 0644 -p /etc/cron.d 
-              - EXPOSE 1215   
+                    && touch /var/log/cron/cron.log \
+                    && mkdir -pm 0644 /etc/cron.d \
+                    && mkdir -pm 0755 /var/www \
+                    && chown -R www-data:www-data /var/www
+               - RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer 
+               - RUN composer global require hirak/prestissimo
+               - RUN cp /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && echo "Asia/Bangkok" > /etc/timezone
+               - RUN apk del .build-deps   
+               - EXPOSE 1215
   steps:
     - metadata:
         name: docker.mooc.guru/library/php-swoole
@@ -61,11 +134,11 @@ build:
         - metadata:
             name: build-env
           base:
-            image: docker.io/phpdockerio/php74-cli
-            platform: latest
+            image: docker.io/alpine
+            platform: "3"
           template: build
-      tag: v0.1.6.1
-      purge: true
+      tag: v0.2.0
+      purge: false
       context:
         localContext:
           contextPath: .
@@ -78,7 +151,7 @@ login:
 push:
   - registry: docker.mooc.guru
     image: library/php-swoole
-    tag: v0.1.6.1
+    tag: v0.2.0
 params:
   - dest: login.0.token
     valueFromEnvVariable: TOKEN
