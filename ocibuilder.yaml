@@ -70,6 +70,8 @@ build:
                     php7-tidy \
                     php7-tokenizer \
                     php7-xml \
+                    php7-xmlwriter \
+                    php7-xmlreader \
                     php7-xmlrpc \
                     php7-xsl \
                     php7-zip \ 
@@ -139,7 +141,7 @@ build:
             image: docker.io/alpine
             platform: "3"
           template: build
-      tag: v0.2.1
+      tag: v0.2.2
       purge: false
       context:
         localContext:
