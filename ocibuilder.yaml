@@ -6,10 +6,15 @@ build:
             inline:
                - LABEL Maintainer="Pichate Ins <pichate.ins[at]outlook.com>"
                - LABEL Name="Pichate Ins"
-               - LABEL Version="v0.2.1"
+               - LABEL Version="v0.2.3"
                - ARG SWOOLE_VERSION=v4.5.2
                - ENV SWOOLE_VERSION=${SWOOLE_VERSION}
                - WORKDIR /tmp
+               - ARG APPDIR=/usr/src/app
+               - ENV APPDIR=${APPDIR}
+               - ARG ARTIFACTS=/var/artifacts
+               - ENV ARTIFACTS=${ARTIFACTS}
+               - RUN mkdir -pm  0755 ${APPDIR} && mkdir -pm 0644 ${ARTIFACTS}
                - |
                 RUN apk --update add --no-cache \
                     freetype \
@@ -120,9 +125,7 @@ build:
                 RUN mkdir -p /var/log/cron \
                     && touch /var/log/cron/cron.log \
                     && mkdir -pm 0644 /etc/cron.d \
-                    && mkdir -pm 0755 mkdir -p /var/www \
-                    && mkdir -pm 0755 mkdir -p /var/artifacts \
-                    && chown -R www-data:www-data /var/www
+                    && chown -R www-data:www-data ${APPDIR}
                - RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer 
                - RUN composer global require hirak/prestissimo
                - RUN cp /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && echo "Asia/Bangkok" > /etc/timezone
@@ -141,7 +144,7 @@ build:
             image: docker.io/alpine
             platform: "3"
           template: build
-      tag: v0.2.2
+      tag: v0.2.3
       purge: false
       context:
         localContext:
@@ -155,7 +158,7 @@ login:
 push:
   - registry: docker.mooc.guru
     image: library/php-swoole
-    tag: v0.2.1
+    tag: v0.2.3
 params:
   - dest: login.0.token
     valueFromEnvVariable: TOKEN
