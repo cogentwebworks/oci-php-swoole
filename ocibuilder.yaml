@@ -6,7 +6,7 @@ build:
             inline:
                - LABEL Maintainer="Pichate Ins <pichate.ins[at]outlook.com>"
                - LABEL Name="Pichate Ins"
-               - LABEL Version="v0.2.3"
+               - LABEL Version="v0.2.5"
                - ARG SWOOLE_VERSION=v4.5.2
                - ENV SWOOLE_VERSION=${SWOOLE_VERSION}
                - WORKDIR /tmp
@@ -141,10 +141,10 @@ build:
         - metadata:
             name: build-env
           base:
-            image: docker.io/alpine
-            platform: "3"
+            image: quay.io/cogentwebworks/alpine-s6
+            platform: "3.12.0"
           template: build
-      tag: v0.2.3
+      tag: v0.2.5
       purge: false
       context:
         localContext:
