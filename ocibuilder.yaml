@@ -158,7 +158,7 @@ login:
 push:
   - registry: docker.mooc.guru
     image: library/php-swoole
-    tag: v0.2.3
+    tag: v0.2.5
 params:
   - dest: login.0.token
     valueFromEnvVariable: TOKEN
