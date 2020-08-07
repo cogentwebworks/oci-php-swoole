@@ -134,7 +134,7 @@ build:
                - EXPOSE 1215
   steps:
     - metadata:
-        name: docker.mooc.guru/library/php-swoole
+        name: docker.globish.dev/library/php-swoole
         labels:
           overlay: build-step
       stages:
@@ -150,13 +150,13 @@ build:
         localContext:
           contextPath: .
 login:
-  - registry: docker.mooc.guru
+  - registry: docker.globish.dev
     token: TOKEN
     creds:
       plain:
         username: USERNAME
 push:
-  - registry: docker.mooc.guru
+  - registry: docker.globish.dev
     image: library/php-swoole
     tag: v0.2.5
 params:
